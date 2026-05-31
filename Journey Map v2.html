@@ -1,0 +1,2189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Your Worldbuilding Journey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,500;0,600;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet" />
+<style>
+  /* ============================================================
+     Tokens
+     ============================================================ */
+  :root {
+    --paper: #fbfaf6;
+    --paper-soft: #f4f1e8;
+    --ink:   #2a2a2a;
+    --ink-soft: #4a4a4a;
+    --rule:  #c8c5bc;
+    --rule-soft: #dcd9d0;
+    --rule-faint: #ece9e0;
+    --mute:  #8a857a;
+    --accent: #7a8a6f;
+    --accent-soft: #c5cdb8;
+    --accent-faint: #e6ead9;
+    --warn: #b06a4a;
+    --serif: "Source Serif 4", "Source Han Serif SC", "Noto Serif CJK SC", ui-serif, "Songti SC", "SimSun", Georgia, serif;
+    --sans:  "Source Sans 3", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", ui-sans-serif, system-ui, "SimHei", sans-serif;
+    --mono:  ui-monospace, "SF Mono", Menlo, "Consolas", monospace;
+    --plot-empty-text: "draw a curve here — high for excited, low for stuck";
+  }
+
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: #e7e3d8;
+    font-family: var(--sans);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 40px 0 80px;
+  }
+  .sheet, .sheet *, .drawer * { box-sizing: border-box; }
+
+  /* ============================================================
+     Sheet
+     ============================================================ */
+  .sheet {
+    width: 8.5in;
+    height: 11in;
+    background: var(--paper);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 12px 40px rgba(40,30,15,0.10);
+    position: relative;
+    padding: 0.75in;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows:
+      1.15in
+      1.15in
+      1fr
+      0.95in;
+    row-gap: 0.16in;
+  }
+
+  /* ============================================================
+     Header
+     ============================================================ */
+  header.head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    column-gap: 0.5in;
+    padding-bottom: 0.18in;
+    border-bottom: 0.6px solid var(--rule);
+  }
+  .title {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 26pt;
+    line-height: 1.0;
+    letter-spacing: -0.01em;
+    margin: 0 0 6pt;
+    white-space: nowrap;
+  }
+  .subtitle {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12.5pt;
+    color: var(--ink-soft);
+    line-height: 1.25;
+    margin: 0;
+  }
+  .meta {
+    display: grid;
+    grid-template-columns: auto 1.2in;
+    column-gap: 10pt;
+    row-gap: 6pt;
+    align-items: end;
+    justify-items: start;
+    font-family: var(--mono);
+    font-size: 8pt;
+    letter-spacing: 0.08em;
+    color: var(--mute);
+    text-transform: uppercase;
+  }
+  .meta label { white-space: nowrap; justify-self: end; padding-bottom: 2pt; }
+  .meta .field {
+    width: 1.2in;
+    border-bottom: 0.8px solid var(--rule);
+    font-family: var(--sans);
+    font-size: 10.5pt;
+    color: var(--ink);
+    letter-spacing: 0;
+    text-transform: none;
+    padding: 0 4pt 1pt;
+    background: transparent;
+    outline: none;
+    border-top: 0; border-left: 0; border-right: 0;
+    line-height: 1.2;
+    min-width: 0;
+  }
+  .meta .field:focus { border-bottom-color: var(--accent); }
+
+  /* ============================================================
+     Instructions
+     ============================================================ */
+  .instructions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 0.35in;
+    align-items: start;
+    padding-top: 0.05in;
+  }
+  .instr { display: grid; grid-template-columns: auto 1fr; column-gap: 10pt; align-items: baseline; }
+  .instr .num { font-family: var(--serif); font-size: 22pt; line-height: 0.9; color: var(--accent); font-weight: 500; }
+  .instr .body { font-family: var(--sans); font-size: 10.5pt; line-height: 1.35; color: var(--ink); }
+  .instr .body em { font-family: var(--serif); font-style: italic; color: var(--ink-soft); display: block; margin-top: 2pt; font-size: 9.5pt; }
+
+  /* ============================================================
+     Canvas
+     ============================================================ */
+  .canvas {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 2.75in 1fr;
+  }
+  .axis-cap {
+    font-family: var(--mono);
+    font-size: 7.5pt;
+    letter-spacing: 0.1em;
+    color: var(--mute);
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 4pt;
+  }
+
+  /* Plot */
+  .plot {
+    position: relative;
+    height: 1.55in;
+    border-top: 0.6px solid var(--rule);
+    border-bottom: 0.6px solid var(--rule);
+    overflow: visible;
+  }
+  .plot .grid { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
+  .plot .grid .mid { position: absolute; left: 0; right: 0; top: 50%; border-top: 0.6px solid var(--rule-soft); }
+  .plot .grid .vticks { position: absolute; inset: 0; display: flex; }
+  .plot .grid .vtick { flex: 1; border-right: 0.5px dotted var(--rule-soft); }
+  .plot .grid .vtick:last-child { border-right: 0; }
+  .plot svg.curve {
+    position: absolute;
+    left: 0; right: 0; top: 0; bottom: 0;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    cursor: crosshair;
+  }
+  .plot svg.curve path { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .plot.empty::after {
+    content: var(--plot-empty-text);
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--serif); font-style: italic; font-size: 10.5pt;
+    color: var(--rule);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  /* Bands & dividers riding the curve */
+  .bands {
+    position: absolute;
+    left: 0; right: 0; top: 0; bottom: 0;
+    width: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .band {
+    position: absolute;
+    top: 0; bottom: 0;
+    pointer-events: none;
+  }
+  .band.tint-a { background: rgba(122,138,111,0.04); }
+  .band.tint-b { background: rgba(122,138,111,0.10); }
+  .band-label {
+    position: absolute;
+    top: 4pt;
+    transform: translateX(-50%);
+    font-family: var(--mono);
+    font-size: 7.5pt;
+    letter-spacing: 0.1em;
+    color: var(--mute);
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 3;
+  }
+  .band-label .n { color: var(--accent); font-weight: 500; }
+  .dividers {
+    position: absolute;
+    left: 0; right: 0; top: 0; bottom: 0;
+    width: 100%;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .divider {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 0;
+    border-left: 0.8px dashed var(--accent);
+    pointer-events: auto;
+    cursor: ew-resize;
+    touch-action: none;
+  }
+  .divider::before {
+    content: "";
+    position: absolute;
+    left: -8pt; right: -8pt; top: 0; bottom: 0;
+  }
+  .divider .grip {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 10pt; height: 22pt;
+    border-radius: 4pt;
+    background: var(--paper);
+    border: 0.8px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    gap: 1.5pt;
+    transition: background 100ms, transform 100ms, box-shadow 100ms;
+  }
+  .divider .grip i {
+    display: block;
+    width: 1px; height: 8pt;
+    background: var(--accent);
+  }
+  .divider:hover .grip,
+  .divider.dragging .grip {
+    background: var(--accent);
+    transform: translate(-50%, -50%) scale(1.08);
+    box-shadow: 0 4px 12px rgba(40,30,15,0.15);
+  }
+  .divider:hover .grip i,
+  .divider.dragging .grip i {
+    background: var(--paper);
+  }
+  .divider.dragging { border-left-style: solid; }
+
+  /* Timeline scroll wrapper — holds plot + steps as one horizontally scrollable unit */
+  .timeline-scroll {
+    position: relative;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-color: var(--rule) transparent;
+    scrollbar-width: thin;
+  }
+  .timeline-scroll::-webkit-scrollbar { height: 8px; }
+  .timeline-scroll::-webkit-scrollbar-track { background: transparent; }
+  .timeline-scroll::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 4px; }
+  .timeline-scroll::-webkit-scrollbar-thumb:hover { background: var(--accent-soft); }
+  .timeline-inner {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    min-width: 100%;
+  }
+  .y-col {
+    flex: 0 0 0.55in;
+    width: 0.55in;
+    position: sticky;
+    left: 0;
+    z-index: 5;
+    background: var(--paper);
+    display: flex;
+    flex-direction: column;
+  }
+  .y-col .y-labels {
+    height: 1.55in;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-family: var(--sans);
+    font-size: 9pt;
+    color: var(--ink-soft);
+    padding: 6pt 0;
+    border-top: 0.6px solid transparent;
+    border-bottom: 0.6px solid transparent;
+    box-sizing: border-box;
+  }
+  .y-col .y-spacer { flex: 1; }
+  .content-col {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  /* Track area (formerly .steps + .track-wrap) */
+  .track-area {
+    position: relative;
+    height: 1.20in;
+  }
+  .track-area .track {
+    position: relative;
+    display: flex;
+    align-items: end;
+    height: 100%;
+    padding-bottom: 0.16in;
+    gap: 0;
+  }
+  .track-area .baseline {
+    position: absolute;
+    left: 0; right: 0;
+    bottom: 0.16in;
+    border-top: 0.8px solid var(--ink);
+  }
+  /* fade-out gradient hinting at horizontal scroll */
+  .timeline-scroll .scroll-fade {
+    position: sticky;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 28px;
+    pointer-events: none;
+    margin-left: -28px;
+    background: linear-gradient(to right, rgba(251,250,246,0), var(--paper));
+    flex: 0 0 28px;
+    align-self: stretch;
+    opacity: 0;
+    transition: opacity 150ms;
+    z-index: 6;
+  }
+  .timeline-scroll.overflowing .scroll-fade { opacity: 1; }
+
+  /* Step card */
+  .step {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    height: 0.95in;
+    margin: 0 4pt 0 4pt;
+    border: 0.8px solid var(--rule);
+    border-radius: 6pt;
+    background: var(--paper);
+    padding: 16pt 8pt 8pt;
+    display: flex;
+    flex-direction: column;
+    gap: 4pt;
+    transition: border-color 120ms, box-shadow 120ms;
+  }
+  .step:hover { border-color: var(--accent-soft); }
+  .step .num {
+    position: absolute;
+    top: -8pt; left: 8pt;
+    background: var(--paper);
+    padding: 0 5pt;
+    font-family: var(--mono);
+    font-size: 7.5pt;
+    letter-spacing: 0.1em;
+    color: var(--mute);
+  }
+  .step .role { color: var(--accent); }
+  .step .title-input {
+    border: 0;
+    background: transparent;
+    font-family: var(--sans);
+    font-size: 9.5pt;
+    line-height: 1.3;
+    color: var(--ink);
+    outline: none;
+    padding: 0;
+    width: 100%;
+    min-width: 0;
+    margin-bottom: 4pt;
+  }
+  .step .title-input::placeholder { color: var(--rule); font-style: italic; }
+  .step .actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+  }
+  .step .has-desc {
+    width: 4pt; height: 4pt; border-radius: 50%;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 120ms;
+  }
+  .step.has-content .has-desc { opacity: 1; }
+  .step .more {
+    border: 0;
+    background: transparent;
+    font-family: var(--mono);
+    font-size: 7pt;
+    letter-spacing: 0.1em;
+    color: var(--mute);
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 2pt 0;
+  }
+  .step .more:hover { color: var(--accent); }
+  .step .remove {
+    position: absolute;
+    top: -8pt; right: 6pt;
+    width: 14pt; height: 14pt;
+    border-radius: 50%;
+    border: 0.8px solid var(--rule);
+    background: var(--paper);
+    color: var(--mute);
+    font-family: var(--sans);
+    font-size: 10pt;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 120ms, color 120ms, border-color 120ms;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0;
+  }
+  .step:hover .remove,
+  .step:focus-within .remove { opacity: 1; }
+  .step .remove:hover { color: var(--warn); border-color: var(--warn); }
+
+  /* Insert (+ between steps) */
+  .insert {
+    flex: 0 0 14pt;
+    align-self: stretch;
+    position: relative;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    padding: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: transparent;
+  }
+  .insert::before {
+    content: "";
+    position: absolute;
+    left: 50%; top: 16pt; bottom: 16pt;
+    width: 0;
+    border-left: 0.5px dashed transparent;
+    transition: border-color 120ms;
+  }
+  .insert:hover::before, .insert:focus-visible::before { border-left-color: var(--accent-soft); }
+  .insert .glyph {
+    width: 16pt; height: 16pt;
+    border-radius: 50%;
+    border: 0.8px solid var(--rule);
+    background: var(--paper);
+    color: var(--mute);
+    font: 12pt/1 var(--sans);
+    display: flex; align-items: center; justify-content: center;
+    transform: scale(0.7);
+    opacity: 0;
+    transition: transform 120ms, opacity 120ms, color 120ms, border-color 120ms;
+  }
+  .insert:hover .glyph, .insert:focus-visible .glyph { transform: scale(1); opacity: 1; color: var(--accent); border-color: var(--accent); }
+
+  /* Moments */
+  .moments {
+    padding-top: 0.18in;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 0.30in;
+    row-gap: 0.14in;
+  }
+  .moment {
+    position: relative;
+    padding: 8pt 10pt 0 0.45in;
+    min-height: 1.4in;
+  }
+  .moment.ai-help {
+    grid-column: 1 / -1;
+    min-height: 0;
+    padding-top: 8pt;
+  }
+  .moment.ai-help .text { min-height: calc(1.5em * 2); }
+  .moment .badge {
+    position: absolute;
+    left: 0; top: 4pt;
+    width: 0.32in; height: 0.32in;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    color: var(--accent);
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 14pt;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--paper);
+  }
+  .moment .label {
+    font-family: var(--mono);
+    font-size: 7.5pt;
+    letter-spacing: 0.12em;
+    color: var(--mute);
+    text-transform: uppercase;
+    display: flex;
+    align-items: baseline;
+    gap: 8pt;
+    margin-bottom: 6pt;
+  }
+  .moment .label .kicker {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 10.5pt;
+    color: var(--ink-soft);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .moment .anchor {
+    font-family: var(--mono);
+    font-size: 7.5pt;
+    letter-spacing: 0.08em;
+    color: var(--mute);
+    text-transform: uppercase;
+    display: inline-flex; align-items: baseline; gap: 4pt;
+  }
+  .moment .anchor select {
+    border: 0;
+    border-bottom: 0.6px solid var(--rule);
+    background: transparent;
+    font-family: var(--sans);
+    font-size: 10pt;
+    color: var(--ink);
+    letter-spacing: 0;
+    text-transform: none;
+    padding: 0 2pt 1pt;
+    outline: none;
+    cursor: pointer;
+    max-width: 1.8in;
+  }
+  .moment .anchor select:focus { border-bottom-color: var(--accent); }
+  .moment .text {
+    font-family: var(--sans);
+    font-size: 10pt;
+    line-height: 1.5;
+    color: var(--ink);
+    background:
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent calc(1.5em - 0.6px),
+        var(--rule-soft) calc(1.5em - 0.6px),
+        var(--rule-soft) 1.5em
+      );
+    min-height: calc(1.5em * 4);
+    padding: 0;
+    border: 0;
+    width: 100%;
+    resize: none;
+    outline: none;
+  }
+  .moment .text::placeholder { color: var(--rule); font-style: italic; }
+  .moment .text:focus { background-image: repeating-linear-gradient(to bottom, transparent 0, transparent calc(1.5em - 0.6px), var(--accent-soft) calc(1.5em - 0.6px), var(--accent-soft) 1.5em); }
+
+  /* Footer */
+  footer.foot {
+    border-top: 0.6px solid var(--rule);
+    padding-top: 0.18in;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    align-items: end;
+  }
+  .invitation { font-family: var(--serif); font-style: italic; font-size: 11pt; color: var(--ink-soft); margin: 0; }
+  .attribution { font-family: var(--mono); font-size: 7.5pt; letter-spacing: 0.12em; color: var(--mute); text-transform: uppercase; text-align: right; margin: 0; }
+
+  /* ============================================================
+     Chrome (toolbar + hint)
+     ============================================================ */
+  .chrome {
+    position: fixed;
+    top: 16px; right: 16px;
+    display: flex;
+    gap: 8px;
+    z-index: 50;
+    font-family: var(--sans);
+    font-size: 12px;
+  }
+  .chrome button {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    color: var(--ink);
+    padding: 6px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    font: inherit;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.03);
+    white-space: nowrap;
+  }
+  .chrome button:hover { border-color: var(--accent); color: var(--accent); }
+  .chrome .primary { background: var(--accent); color: white; border-color: var(--accent); }
+  .chrome .primary:hover { background: #6a7a5f; color: white; }
+  .chrome .danger:hover { border-color: var(--warn); color: var(--warn); }
+  .chrome .submit { background: var(--accent); color: white; border-color: var(--accent); font-weight: 600; }
+  .chrome .submit:hover:not(:disabled) { background: #5a6e4f; border-color: #5a6e4f; }
+  .chrome .submit:disabled { opacity: 0.7; cursor: not-allowed; }
+  .chrome .submit.done { background: #3d6b34; border-color: #3d6b34; }
+  .chrome .submit.error { background: transparent; color: var(--warn); border-color: var(--warn); }
+  .hint {
+    position: fixed;
+    bottom: 12px; left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--sans);
+    font-size: 11px;
+    color: #6e6a5f;
+    background: rgba(251,250,246,0.85);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 4px 12px;
+    z-index: 50;
+    white-space: nowrap;
+  }
+
+  /* ============================================================
+     Drawer
+     ============================================================ */
+  .drawer-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(40,30,15,0.18);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms;
+  }
+  .drawer-backdrop.open { opacity: 1; pointer-events: auto; }
+  .drawer {
+    position: fixed;
+    top: 0; right: 0; bottom: 0;
+    width: 460px;
+    max-width: 92vw;
+    background: var(--paper);
+    border-left: 0.6px solid var(--rule);
+    box-shadow: -12px 0 40px rgba(40,30,15,0.10);
+    z-index: 101;
+    transform: translateX(100%);
+    transition: transform 240ms cubic-bezier(.2,.7,.2,1);
+    display: flex; flex-direction: column;
+    padding: 24px 28px;
+    font-family: var(--sans);
+    overflow-y: auto;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer .kicker {
+    font-family: var(--mono);
+    font-size: 8pt;
+    letter-spacing: 0.12em;
+    color: var(--mute);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .drawer .kicker .role { color: var(--accent); }
+  .drawer .title-input {
+    font-family: var(--serif);
+    font-size: 22pt;
+    font-weight: 500;
+    line-height: 1.1;
+    border: 0;
+    border-bottom: 0.8px solid var(--rule-soft);
+    background: transparent;
+    color: var(--ink);
+    padding: 4px 0 8px;
+    margin-bottom: 22px;
+    outline: none;
+    width: 100%;
+  }
+  .drawer .title-input::placeholder { color: var(--rule); font-style: italic; }
+  .drawer .title-input:focus { border-bottom-color: var(--accent); }
+
+  .drawer .field-group { margin-bottom: 18px; }
+  .drawer label.field-label {
+    font-family: var(--mono);
+    font-size: 8pt;
+    letter-spacing: 0.12em;
+    color: var(--mute);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .drawer label.field-label .hint {
+    position: static;
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    margin-left: 8px;
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--rule);
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 9pt;
+  }
+
+  .drawer textarea.text-input {
+    width: 100%;
+    border: 0.6px solid var(--rule-soft);
+    border-radius: 4px;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 11pt;
+    line-height: 1.55;
+    padding: 10px 12px;
+    resize: vertical;
+    outline: none;
+  }
+  .drawer textarea.text-input:focus { border-color: var(--accent); }
+  .drawer textarea.text-input::placeholder { color: var(--rule); font-style: italic; }
+  .drawer textarea#drawer-feeling { min-height: 80px; }
+  .drawer textarea#drawer-notes { min-height: 100px; }
+
+  /* Creativity scale */
+  .drawer .scale {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+  }
+  .drawer .scale-track-wrap { position: relative; padding: 6px 0 18px; }
+  .drawer .scale-track-wrap .anchors {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 7.5pt;
+    letter-spacing: 0.1em;
+    color: var(--mute);
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+  .drawer input[type="range"].creativity {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 22px;
+    background: transparent;
+    outline: none;
+    margin: 0;
+    cursor: pointer;
+  }
+  .drawer input[type="range"].creativity::-webkit-slider-runnable-track {
+    height: 4px;
+    background: var(--rule-soft);
+    border-radius: 999px;
+  }
+  .drawer input[type="range"].creativity::-moz-range-track {
+    height: 4px;
+    background: var(--rule-soft);
+    border-radius: 999px;
+  }
+  .drawer input[type="range"].creativity::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--paper);
+    box-shadow: 0 0 0 1px var(--accent);
+    margin-top: -7px;
+    cursor: grab;
+  }
+  .drawer input[type="range"].creativity::-moz-range-thumb {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--paper);
+    box-shadow: 0 0 0 1px var(--accent);
+    cursor: grab;
+  }
+  .drawer input[type="range"].creativity.unset::-webkit-slider-thumb {
+    background: var(--paper);
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+  .drawer input[type="range"].creativity.unset::-moz-range-thumb {
+    background: var(--paper);
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+  .drawer .scale-value {
+    font-family: var(--serif);
+    font-size: 26pt;
+    line-height: 1;
+    color: var(--accent);
+    min-width: 1.4em;
+    text-align: right;
+    font-feature-settings: "tnum" 1;
+  }
+  .drawer .scale-value.unset { color: var(--rule); }
+
+  .drawer .footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 0.6px solid var(--rule-soft);
+    font-family: var(--mono);
+    font-size: 8pt;
+    letter-spacing: 0.1em;
+    color: var(--mute);
+    text-transform: uppercase;
+  }
+  .drawer .nav { display: flex; gap: 8px; }
+  .drawer .nav button {
+    background: transparent;
+    border: 0.6px solid var(--rule);
+    color: var(--ink-soft);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font: inherit;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+  }
+  .drawer .nav button:hover { border-color: var(--accent); color: var(--accent); }
+  .drawer .nav button:disabled { opacity: 0.35; cursor: not-allowed; }
+  .drawer .close {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: transparent;
+    border: 0;
+    font-size: 22px;
+    color: var(--mute);
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 8px;
+  }
+  .drawer .close:hover { color: var(--ink); }
+
+  /* ============================================================
+     Print
+     ============================================================ */
+  @page { size: Letter portrait; margin: 0; }
+  @media print {
+    /* Must be on a real selector — bare declarations in @media are invalid and ignored */
+    html {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+    body { background: white; padding: 0; display: block; }
+    .sheet { box-shadow: none; }
+    .chrome, .hint, .drawer-backdrop, .drawer { display: none !important; }
+    .step .remove, .insert, .step .more { display: none !important; }
+    .step .actions { display: none !important; }
+    .divider { cursor: default; }
+    .timeline-scroll { overflow: visible !important; }
+    .timeline-inner { width: 100% !important; min-width: 0 !important; }
+    .content-col { min-width: 0 !important; }
+    .scroll-fade { display: none !important; }
+    /* Hard-code the curve stroke so CSS-variable resolution in SVG can't fail */
+    .plot svg.curve path {
+      stroke: #7a8a6f !important;
+      stroke-width: 2 !important;
+    }
+  }
+
+  /* ============================================================
+     Print — Stage detail pages (hidden on screen, shown in print)
+     ============================================================ */
+  #print-stages { display: none; }
+  @media print {
+    #print-stages { display: block; }
+    .print-stage-page {
+      width: 8.5in;
+      height: 11in;
+      padding: 0.75in;
+      box-sizing: border-box;
+      page-break-before: always;
+      break-before: page;
+      display: grid;
+      grid-template-rows: auto auto auto 1fr 1fr 1fr;
+      gap: 0.22in;
+      font-family: var(--sans);
+      color: var(--ink);
+      background: var(--paper);
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .psp-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding-bottom: 0.18in;
+      border-bottom: 0.6px solid var(--rule);
+    }
+    .psp-num {
+      font-family: var(--mono);
+      font-size: 9pt;
+      letter-spacing: 0.12em;
+      color: var(--mute);
+      text-transform: uppercase;
+    }
+    .psp-meta {
+      font-family: var(--mono);
+      font-size: 8pt;
+      letter-spacing: 0.08em;
+      color: var(--mute);
+      text-transform: uppercase;
+    }
+    .psp-title {
+      font-family: var(--serif);
+      font-size: 28pt;
+      font-weight: 500;
+      line-height: 1.1;
+      margin: 0;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+    .psp-interval {
+      font-family: var(--mono);
+      font-size: 8pt;
+      letter-spacing: 0.1em;
+      color: var(--mute);
+      text-transform: uppercase;
+    }
+    .psp-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.09in;
+      border-top: 0.6px solid var(--rule-faint);
+      padding-top: 0.14in;
+    }
+    .psp-label {
+      font-family: var(--mono);
+      font-size: 8pt;
+      letter-spacing: 0.12em;
+      color: var(--mute);
+      text-transform: uppercase;
+    }
+    .psp-body {
+      font-family: var(--sans);
+      font-size: 11.5pt;
+      line-height: 1.55;
+      color: var(--ink);
+      white-space: pre-wrap;
+    }
+    .psp-body.empty { color: var(--rule); font-style: italic; }
+    .psp-creativity-row {
+      display: flex;
+      align-items: center;
+      gap: 0.2in;
+    }
+    .psp-bar-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 5pt;
+    }
+    .psp-bar-track {
+      height: 7pt;
+      background: var(--rule-faint);
+      border-radius: 3.5pt;
+      overflow: hidden;
+    }
+    .psp-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 3.5pt;
+    }
+    .psp-bar-labels {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 7pt;
+      letter-spacing: 0.1em;
+      color: var(--mute);
+      text-transform: uppercase;
+    }
+    .psp-creativity-val {
+      font-family: var(--serif);
+      font-size: 34pt;
+      line-height: 1;
+      color: var(--accent);
+      font-weight: 500;
+      min-width: 1.1in;
+      text-align: right;
+    }
+    .psp-creativity-val.unset { color: var(--rule); font-size: 24pt; }
+    .psp-creativity-denom {
+      font-size: 14pt;
+      color: var(--mute);
+      font-weight: 400;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="chrome" role="toolbar" aria-label="Template controls">
+  <button id="btn-lang" title="Switch language / 切换语言" data-i18n="lang.toggle">中文</button>
+  <button id="btn-reset" class="danger" title="Clear all participant input" data-i18n="btn.reset">Reset</button>
+  <button id="btn-export" title="Download all data as JSON" data-i18n="btn.export">Export JSON</button>
+  <button id="btn-print" title="Print or save as PDF" data-i18n="btn.print">Print / Save PDF</button>
+  <button id="btn-submit" class="submit" title="Send your journey map to the researcher" data-i18n="btn.submit">Submit to Researcher</button>
+</div>
+<div class="hint" id="hint" data-i18n="hint.default">Draw the curve · drag the dividers to set each stage's interval · click a stage for details</div>
+
+<article class="sheet" aria-label="Your Worldbuilding Journey">
+
+  <header class="head">
+    <div>
+      <h1 class="title" data-i18n="header.title">Your Worldbuilding Journey</h1>
+      <p class="subtitle" data-i18n="header.subtitle">Sketch the path from spark to where you are now.</p>
+    </div>
+    <div class="meta">
+      <label for="pid" data-i18n="meta.label.pid">Participant</label>
+      <input id="pid" class="field" autocomplete="off" />
+      <label for="dte" data-i18n="meta.label.dte">Date</label>
+      <input id="dte" class="field" autocomplete="off" />
+    </div>
+  </header>
+
+  <section class="instructions" aria-label="How to fill this in">
+    <div class="instr">
+      <div class="num">1</div>
+      <div class="body"><span data-i18n="instr.1.body">Name your stages, from spark to today.</span>
+        <em data-i18n="instr.1.em">Use + to add, × to remove.</em>
+      </div>
+    </div>
+    <div class="instr">
+      <div class="num">2</div>
+      <div class="body"><span data-i18n="instr.2.body">Draw your emotion curve.</span>
+        <em data-i18n="instr.2.em">Then drag the dividers to set each stage's interval.</em>
+      </div>
+    </div>
+    <div class="instr">
+      <div class="num">3</div>
+      <div class="body"><span data-i18n="instr.3.body">Click a stage for feelings, creativity, notes.</span>
+        <em data-i18n="instr.3.em">Anchor a peak and valley below.</em>
+      </div>
+    </div>
+  </section>
+
+  <section class="canvas" aria-label="Journey canvas">
+
+    <div class="axis-cap">
+      <span data-i18n="axis.emotion">Emotion across your journey</span>
+      <span data-i18n="axis.time">Time →</span>
+    </div>
+
+    <div class="timeline-scroll" id="timeline-scroll">
+      <div class="timeline-inner">
+        <div class="y-col" aria-hidden="true">
+          <div class="y-labels">
+            <span class="top" data-i18n="axis.excited">↑ excited</span>
+            <span></span>
+            <span class="bot" data-i18n="axis.stuck">↓ stuck</span>
+          </div>
+          <div class="y-spacer"></div>
+        </div>
+        <div class="content-col" id="content-col">
+          <div class="plot empty" id="plot">
+            <div class="grid">
+              <div class="mid"></div>
+              <div class="vticks" id="vticks"></div>
+            </div>
+            <svg class="curve" id="curve" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+              <path id="curve-path" d="" />
+            </svg>
+            <div class="bands"    id="bands"    aria-hidden="true"></div>
+            <div class="dividers" id="dividers" aria-label="Stage boundaries"></div>
+          </div>
+          <div class="track-area">
+            <div class="track" id="track" role="list" aria-label="Journey stages"></div>
+            <div class="baseline"></div>
+          </div>
+        </div>
+        <div class="scroll-fade" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <div class="moments">
+      <div class="moment">
+        <div class="badge">A</div>
+        <div class="label">
+          <span class="kicker" data-i18n="moment.peak.kicker">Peak</span>
+          <span class="anchor"><span data-i18n="moment.peak.anchor">at</span> <select id="anchor-a" data-key="anchorA"></select></span>
+        </div>
+        <textarea class="text" rows="4" placeholder="What was happening at your highest point?" data-key="peakText" data-i18n-ph="moment.peak.ph"></textarea>
+      </div>
+      <div class="moment">
+        <div class="badge">B</div>
+        <div class="label">
+          <span class="kicker" data-i18n="moment.valley.kicker">Valley</span>
+          <span class="anchor"><span data-i18n="moment.valley.anchor">at</span> <select id="anchor-b" data-key="anchorB"></select></span>
+        </div>
+        <textarea class="text" rows="4" placeholder="What was happening at your lowest point?" data-key="valleyText" data-i18n-ph="moment.valley.ph"></textarea>
+      </div>
+      <div class="moment ai-help">
+        <div class="badge">C</div>
+        <div class="label">
+          <span class="kicker" data-i18n="moment.ai.kicker">I want to have AI Support</span>
+          <span class="anchor"><span data-i18n="moment.ai.anchor">for stage</span> <select id="anchor-c" data-key="aiHelpStageId"></select></span>
+        </div>
+        <textarea class="text" rows="2" placeholder="What kind of data visualization would you like AI to help with at this stage?" data-key="aiHelpText" data-i18n-ph="moment.ai.ph"></textarea>
+      </div>
+    </div>
+
+  </section>
+
+  <footer class="foot">
+    <p class="attribution" data-i18n="footer.attribution">Worldbuilding Co-Creation Study · HKUST · 2026</p>
+  </footer>
+
+</article>
+
+<!-- Step detail drawer -->
+<div class="drawer-backdrop" id="backdrop"></div>
+<aside class="drawer" id="drawer" aria-label="Stage details" aria-hidden="true">
+  <button class="close" id="drawer-close" aria-label="Close" data-i18n-aria="drawer.aria.close">×</button>
+  <div class="kicker"><span class="num">Stage 01</span><span class="role"></span></div>
+  <input class="title-input" id="drawer-title" placeholder="name this stage…" data-i18n-ph="drawer.ph.title" />
+
+  <div class="field-group">
+    <label class="field-label" for="drawer-feeling"><span data-i18n="drawer.feeling.label">What did you feel?</span><span class="hint" data-i18n="drawer.feeling.hint">at this stage</span></label>
+    <textarea class="text-input" id="drawer-feeling" placeholder="A word, a phrase, a sentence — whatever describes the emotional texture of this stage." data-i18n-ph="drawer.feeling.ph"></textarea>
+  </div>
+
+  <div class="field-group">
+    <label class="field-label" for="drawer-creativity"><span data-i18n="drawer.creativity.label">Level of creativity</span><span class="hint" data-i18n="drawer.creativity.hint">drag the dot to set</span></label>
+    <div class="scale">
+      <div class="scale-track-wrap">
+        <input type="range" min="1" max="10" step="1" value="5" class="creativity unset" id="drawer-creativity" />
+        <div class="anchors"><span data-i18n="drawer.creativity.blocked">blocked</span><span data-i18n="drawer.creativity.flow">in flow</span></div>
+      </div>
+      <div class="scale-value unset" id="drawer-creativity-value">—</div>
+    </div>
+  </div>
+
+  <div class="field-group">
+    <label class="field-label" for="drawer-notes"><span data-i18n="drawer.notes.label">Anything else?</span><span class="hint" data-i18n="drawer.notes.hint">references, people, surprises…</span></label>
+    <textarea class="text-input" id="drawer-notes" placeholder="Sources, references, people, surprises — anything you'd like us to know about this stage." data-i18n-ph="drawer.notes.ph"></textarea>
+  </div>
+
+  <div class="footer-row">
+    <span class="counter" id="drawer-counter">stage 1 of 5</span>
+    <div class="nav">
+      <button id="drawer-prev" data-i18n="drawer.prev">← prev</button>
+      <button id="drawer-next" data-i18n="drawer.next">next →</button>
+    </div>
+  </div>
+</aside>
+
+<!-- Stage detail pages: hidden on screen, printed after the main sheet -->
+<div id="print-stages" aria-hidden="true"></div>
+
+<script>
+/* ============================================================
+   State model
+   step = { id, title, feeling, creativity ∈ 1..10 | null, notes }
+   boundaries = array of length N+1, monotonic in [0,1]; first=0, last=1
+     stage i spans [boundaries[i], boundaries[i+1]]
+   curve = array of [x,y] normalized to [0,1] (y=0 at top of plot)
+   ============================================================ */
+/* ============================================================
+   Translations
+   ============================================================ */
+const TRANSLATIONS = {
+  en: {
+    'page.title':                  'Your Worldbuilding Journey',
+    'header.title':                'Your Worldbuilding Journey',
+    'header.subtitle':             'Sketch the path from spark to where you are now.',
+    'meta.label.pid':              'Participant',
+    'meta.label.dte':              'Date',
+    'instr.1.body':                'Name your stages, from spark to today.',
+    'instr.1.em':                  'Use + to add, × to remove.',
+    'instr.2.body':                'Draw your emotion curve.',
+    'instr.2.em':                  "Then drag the dividers to set each stage's interval.",
+    'instr.3.body':                'Click a stage for feelings, creativity, notes.',
+    'instr.3.em':                  'Anchor a peak and valley below.',
+    'axis.emotion':                'Emotion across your journey',
+    'axis.time':                   'Time →',
+    'axis.excited':                '↑ excited',
+    'axis.stuck':                  '↓ stuck',
+    'plot.empty':                  'draw a curve here — high for excited, low for stuck',
+    'moment.peak.kicker':          'Peak',
+    'moment.peak.anchor':          'at',
+    'moment.peak.ph':              'What was happening at your highest point?',
+    'moment.valley.kicker':        'Valley',
+    'moment.valley.anchor':        'at',
+    'moment.valley.ph':            'What was happening at your lowest point?',
+    'moment.ai.kicker':            'I want to have AI Support',
+    'moment.ai.anchor':            'for stage',
+    'moment.ai.ph':                'What kind of data visualization would you like AI to help with at this stage?',
+    'footer.attribution':          'Worldbuilding Co-Creation Study · HKUST · 2026',
+    'btn.reset':                   'Reset',
+    'btn.export':                  'Export JSON',
+    'btn.print':                   'Print / Save PDF',
+    'btn.submit':                  'Submit to Researcher',
+    'btn.submit.ing':              'Submitting…',
+    'btn.submit.done':             'Submitted ✓',
+    'hint.default':                "Draw the curve · drag the dividers to set each stage's interval · click a stage for details",
+    'hint.min':                    'Minimum {n} stages',
+    'step.role.spark':             ' · SPARK',
+    'step.role.today':             ' · TODAY',
+    'step.ph.spark':               'the spark…',
+    'step.ph.today':               'today…',
+    'step.ph.default':             'name this stage…',
+    'step.details':                'details ›',
+    'step.aria.remove':            'Remove this stage',
+    'step.aria.insert':            'Insert a stage here',
+    'anchor.default':              '— stage —',
+    'drawer.ph.title':             'name this stage…',
+    'drawer.feeling.label':        'What did you feel?',
+    'drawer.feeling.hint':         'at this stage',
+    'drawer.feeling.ph':           'A word, a phrase, a sentence — whatever describes the emotional texture of this stage.',
+    'drawer.creativity.label':     'Level of creativity',
+    'drawer.creativity.hint':      'drag the dot to set',
+    'drawer.creativity.blocked':   'blocked',
+    'drawer.creativity.flow':      'in flow',
+    'drawer.notes.label':          'Anything else?',
+    'drawer.notes.hint':           'references, people, surprises…',
+    'drawer.notes.ph':             "Sources, references, people, surprises — anything you'd like us to know about this stage.",
+    'drawer.stage.prefix':         'Stage',
+    'drawer.stage.suffix':         '',
+    'drawer.role.spark':           'SPARK',
+    'drawer.role.today':           'TODAY',
+    'drawer.counter':              'stage {n} of {total}',
+    'drawer.prev':                 '← prev',
+    'drawer.next':                 'next →',
+    'drawer.aria.close':           'Close',
+    'confirm.reset':               'Clear all participant input?',
+    'confirm.submit':              'Submit your journey map to the researcher?\n\nMake sure you have completed all stages before submitting.',
+    'alert.submit.fail':           'Could not submit: {err}\n\nMake sure the server is running (npm start in the journeymapcollect folder).',
+    'psp.stage.prefix':            'Stage',
+    'psp.stage.suffix':            '',
+    'psp.interval':                'Journey interval: {a}% – {b}%',
+    'psp.felt':                    'What I felt',
+    'psp.creativity':              'Creativity level',
+    'psp.creativity.blocked':      'blocked',
+    'psp.creativity.flow':         'in flow',
+    'psp.notes':                   'Notes',
+    'psp.ai':                      'AI support priority',
+    'psp.ai.selected':             'Selected — no details given',
+    'psp.ai.not':                  'Not selected',
+    'psp.empty':                   'not filled in',
+    'psp.untitled':                'Untitled Stage',
+    'lang.toggle':                 '中文',
+  },
+  zh: {
+    'page.title':                  '您的世界构建历程',
+    'header.title':                '您的世界构建历程',
+    'header.subtitle':             '勾勒从灵感迸发到现在的路径。',
+    'meta.label.pid':              '参与者',
+    'meta.label.dte':              '日期',
+    'instr.1.body':                '从灵感到今天，为各阶段命名。',
+    'instr.1.em':                  '用 + 添加阶段，用 × 删除阶段。',
+    'instr.2.body':                '绘制您的情绪曲线。',
+    'instr.2.em':                  '拖动分隔线设置每个阶段的时间区间。',
+    'instr.3.body':                '点击阶段填写感受、创造力和备注。',
+    'instr.3.em':                  '在下方标记最高点与最低点。',
+    'axis.emotion':                '历程中的情绪变化',
+    'axis.time':                   '时间 →',
+    'axis.excited':                '↑ 兴奋',
+    'axis.stuck':                  '↓ 受阻',
+    'plot.empty':                  '在此绘制曲线 — 高处表示兴奋，低处表示受阻',
+    'moment.peak.kicker':          '最高点',
+    'moment.peak.anchor':          '位于',
+    'moment.peak.ph':              '您情绪最高涨时发生了什么？',
+    'moment.valley.kicker':        '最低点',
+    'moment.valley.anchor':        '位于',
+    'moment.valley.ph':            '您情绪最低落时发生了什么？',
+    'moment.ai.kicker':            '我希望获得 AI 支持',
+    'moment.ai.anchor':            '阶段',
+    'moment.ai.ph':                '您希望 AI 在这个阶段协助哪种数据可视化？',
+    'footer.attribution':          '世界构建共创研究 · 香港科技大学 · 2026',
+    'btn.reset':                   '重置',
+    'btn.export':                  '导出 JSON',
+    'btn.print':                   '打印 / 保存 PDF',
+    'btn.submit':                  '提交给研究员',
+    'btn.submit.ing':              '提交中…',
+    'btn.submit.done':             '已提交 ✓',
+    'hint.default':                '绘制曲线 · 拖动分隔线设置各阶段区间 · 点击阶段查看详情',
+    'hint.min':                    '最少需要 {n} 个阶段',
+    'step.role.spark':             ' · 起点',
+    'step.role.today':             ' · 今天',
+    'step.ph.spark':               '灵感起点…',
+    'step.ph.today':               '今天…',
+    'step.ph.default':             '为此阶段命名…',
+    'step.details':                '详情 ›',
+    'step.aria.remove':            '删除此阶段',
+    'step.aria.insert':            '在此插入阶段',
+    'anchor.default':              '— 选择阶段 —',
+    'drawer.ph.title':             '为此阶段命名…',
+    'drawer.feeling.label':        '您有什么感受？',
+    'drawer.feeling.hint':         '在此阶段',
+    'drawer.feeling.ph':           '一个词、一个短语或一句话 — 描述这一阶段的情感氛围。',
+    'drawer.creativity.label':     '创造力水平',
+    'drawer.creativity.hint':      '拖动圆点进行设置',
+    'drawer.creativity.blocked':   '受阻',
+    'drawer.creativity.flow':      '进入心流',
+    'drawer.notes.label':          '还有什么想补充的？',
+    'drawer.notes.hint':           '参考资料、人物、意外发现…',
+    'drawer.notes.ph':             '资料来源、参考文献、相关人物、意外发现 — 任何您希望我们了解的内容。',
+    'drawer.stage.prefix':         '第',
+    'drawer.stage.suffix':         ' 阶段',
+    'drawer.role.spark':           '起点',
+    'drawer.role.today':           '今天',
+    'drawer.counter':              '第 {n} 阶段，共 {total} 个',
+    'drawer.prev':                 '← 上一个',
+    'drawer.next':                 '下一个 →',
+    'drawer.aria.close':           '关闭',
+    'confirm.reset':               '清除所有参与者输入内容？',
+    'confirm.submit':              '将您的历程地图提交给研究员？\n\n请确保在提交前已填写所有阶段。',
+    'alert.submit.fail':           '提交失败：{err}\n\n请确认服务器正在运行（在 journeymapcollect 文件夹中执行 npm start）。',
+    'psp.stage.prefix':            '第',
+    'psp.stage.suffix':            ' 阶段',
+    'psp.interval':                '历程区间：{a}% – {b}%',
+    'psp.felt':                    '我的感受',
+    'psp.creativity':              '创造力水平',
+    'psp.creativity.blocked':      '受阻',
+    'psp.creativity.flow':         '进入心流',
+    'psp.notes':                   '备注',
+    'psp.ai':                      'AI 支持优先级',
+    'psp.ai.selected':             '已选择 — 未填写详情',
+    'psp.ai.not':                  '未选择',
+    'psp.empty':                   '未填写',
+    'psp.untitled':                '未命名阶段',
+    'lang.toggle':                 'EN',
+  },
+};
+
+function t(key, vars) {
+  const lang = (state && state.lang) || 'en';
+  const dict = TRANSLATIONS[lang] || TRANSLATIONS['en'];
+  let str = (key in dict) ? dict[key] : (TRANSLATIONS['en'][key] || key);
+  if (vars) Object.keys(vars).forEach(k => {
+    str = str.replace(new RegExp('\\{' + k + '\\}', 'g'), vars[k]);
+  });
+  return str;
+}
+
+const STORAGE_KEY = 'wjm.v2.state';
+const MIN_STEPS = 3;
+const MAX_STEPS = 12;
+const MIN_INTERVAL = 0.04; // minimum width of a stage interval
+
+function newId() { return 's' + Math.random().toString(36).slice(2, 9); }
+function evenBoundaries(n) {
+  return Array.from({length: n + 1}, (_, i) => i / n);
+}
+function defaultSteps(n = 5) {
+  return Array.from({length: n}, () => ({
+    id: newId(),
+    title: '',
+    feeling: '',
+    creativity: null,
+    notes: '',
+  }));
+}
+function stepHasContent(s) {
+  return !!(s.title || s.feeling || s.notes || (s.creativity != null));
+}
+
+let state = {
+  pid: '',
+  dte: '',
+  lang: 'en',
+  curve: [],
+  steps: defaultSteps(),
+  boundaries: evenBoundaries(5),
+  anchorA: '',
+  anchorB: '',
+  peakText: '',
+  valleyText: '',
+  aiHelpStageId: '',
+  aiHelpText: '',
+};
+
+function save() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    if (!s || typeof s !== 'object') return;
+    state = Object.assign(state, s);
+    if (!Array.isArray(state.steps) || state.steps.length < MIN_STEPS) {
+      state.steps = defaultSteps();
+      state.boundaries = evenBoundaries(state.steps.length);
+    }
+    // Migration: legacy `desc` → `notes`; legacy `x` (point markers) discarded
+    state.steps = state.steps.map((step) => ({
+      id: step.id || newId(),
+      title: step.title || '',
+      feeling: step.feeling || '',
+      creativity: (typeof step.creativity === 'number') ? step.creativity : null,
+      notes: step.notes || step.desc || '',
+    }));
+    // Repair boundaries if missing or wrong length
+    if (!Array.isArray(state.boundaries) || state.boundaries.length !== state.steps.length + 1) {
+      state.boundaries = evenBoundaries(state.steps.length);
+    } else {
+      // Clamp + sort + force endpoints
+      state.boundaries = state.boundaries.map(b => Math.max(0, Math.min(1, b)));
+      state.boundaries.sort((a, b) => a - b);
+      state.boundaries[0] = 0;
+      state.boundaries[state.boundaries.length - 1] = 1;
+    }
+  } catch (e) {}
+}
+
+/* ============================================================
+   DOM refs
+   ============================================================ */
+const track = document.getElementById('track');
+const bandsEl    = document.getElementById('bands');
+const dividersEl = document.getElementById('dividers');
+const vticks = document.getElementById('vticks');
+const anchorASel = document.getElementById('anchor-a');
+const anchorBSel = document.getElementById('anchor-b');
+const anchorCSel = document.getElementById('anchor-c');
+const plot = document.getElementById('plot');
+const curveSvg = document.getElementById('curve');
+const curvePath = document.getElementById('curve-path');
+
+function pad2(n) { return String(n).padStart(2, '0'); }
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+/* ============================================================
+   Language toggle
+   ============================================================ */
+function toggleLang() {
+  state.lang = (state.lang === 'en') ? 'zh' : 'en';
+  save();
+  applyLang();
+}
+
+function applyLang() {
+  document.documentElement.lang = (state.lang === 'zh') ? 'zh-Hans' : 'en';
+  document.title = t('page.title');
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.dataset.i18n);
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    el.placeholder = t(el.dataset.i18nPh);
+  });
+  document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+    el.setAttribute('aria-label', t(el.dataset.i18nAria));
+  });
+  document.documentElement.style.setProperty(
+    '--plot-empty-text',
+    '"' + t('plot.empty').replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"'
+  );
+  renderTrack();
+  if (document.getElementById('drawer').classList.contains('open')) syncDrawer();
+  const hint = document.getElementById('hint');
+  if (!hint.style.color) hint.textContent = t('hint.default');
+}
+
+/* ============================================================
+   Curve helpers
+   ============================================================ */
+function curveYAt(x) {
+  const pts = state.curve;
+  if (!pts || pts.length < 2) return 0.5;
+  // Find segment whose x-range straddles target x
+  for (let i = 0; i < pts.length - 1; i++) {
+    const [x1, y1] = pts[i], [x2, y2] = pts[i+1];
+    if ((x1 <= x && x <= x2) || (x2 <= x && x <= x1)) {
+      const dx = x2 - x1;
+      const t = dx === 0 ? 0 : (x - x1) / dx;
+      return y1 + (y2 - y1) * t;
+    }
+  }
+  // Clamp to nearest endpoint by x
+  const first = pts[0], last = pts[pts.length - 1];
+  return x < first[0] ? first[1] : last[1];
+}
+
+/* Curve is rendered in viewBox space (1000×1000) so it scales correctly
+   at any display size and in print without re-computation. */
+const CURVE_VW = 1000, CURVE_VH = 1000;
+
+function renderCurve() {
+  const pts = state.curve;
+  if (!pts || pts.length < 2) {
+    curvePath.setAttribute('d', '');
+    plot.classList.add('empty');
+    return;
+  }
+  plot.classList.remove('empty');
+  const w = CURVE_VW, h = CURVE_VH;
+  const P = pts.map(([x,y]) => [x*w, y*h]);
+  let d = `M ${P[0][0].toFixed(1)} ${P[0][1].toFixed(1)}`;
+  for (let i = 0; i < P.length - 1; i++) {
+    const p0 = P[i-1] || P[i];
+    const p1 = P[i];
+    const p2 = P[i+1];
+    const p3 = P[i+2] || p2;
+    const c1x = p1[0] + (p2[0]-p0[0])/6;
+    const c1y = p1[1] + (p2[1]-p0[1])/6;
+    const c2x = p2[0] - (p3[0]-p1[0])/6;
+    const c2y = p2[1] - (p3[1]-p1[1])/6;
+    d += ` C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`;
+  }
+  curvePath.setAttribute('d', d);
+}
+
+/* ============================================================
+   Step / marker / select rendering
+   ============================================================ */
+function renderTrack() {
+  track.innerHTML = '';
+  track.appendChild(makeInsert(0));
+  state.steps.forEach((step, i) => {
+    track.appendChild(makeStep(step, i));
+    track.appendChild(makeInsert(i + 1));
+  });
+
+  renderBandsAndDividers();
+  renderAnchorSelects();
+  renderVTicks();
+  updateAddVisibility();
+  updateTimelineWidth();
+}
+
+/* Set content-col min-width so the timeline overflows when there are many stages.
+   Each stage gets ~0.875in (84px) min before horizontal scroll kicks in.
+   With 7in canvas width minus 0.55in y-axis = ~6.45in available, scroll
+   begins around N=8. */
+function updateTimelineWidth() {
+  const contentCol = document.getElementById('content-col');
+  const STAGE_MIN_PX = 84;
+  const total = state.steps.length * STAGE_MIN_PX;
+  contentCol.style.minWidth = total + 'px';
+  // toggle .overflowing for the fade-out hint
+  requestAnimationFrame(checkOverflow);
+}
+function checkOverflow() {
+  const ts = document.getElementById('timeline-scroll');
+  if (!ts) return;
+  ts.classList.toggle('overflowing', ts.scrollWidth > ts.clientWidth + 1);
+}
+window.addEventListener('resize', () => requestAnimationFrame(checkOverflow));
+
+function renderBandsAndDividers() {
+  // Bands
+  bandsEl.innerHTML = '';
+  state.steps.forEach((step, i) => {
+    const a = state.boundaries[i];
+    const b = state.boundaries[i + 1];
+    const band = document.createElement('div');
+    band.className = 'band ' + (i % 2 === 0 ? 'tint-a' : 'tint-b');
+    band.style.left  = (a * 100) + '%';
+    band.style.width = ((b - a) * 100) + '%';
+    bandsEl.appendChild(band);
+
+    const lbl = document.createElement('div');
+    lbl.className = 'band-label';
+    lbl.style.left = (((a + b) / 2) * 100) + '%';
+    lbl.innerHTML = `<span class="n">${pad2(i + 1)}</span>`;
+    bandsEl.appendChild(lbl);
+  });
+
+  // Internal dividers (one per boundary, excluding endpoints)
+  dividersEl.innerHTML = '';
+  for (let i = 1; i < state.boundaries.length - 1; i++) {
+    const d = document.createElement('div');
+    d.className = 'divider';
+    d.dataset.boundary = i;
+    d.style.left = (state.boundaries[i] * 100) + '%';
+    d.setAttribute('aria-label', `Boundary between stage ${i} and ${i + 1}`);
+    d.innerHTML = '<div class="grip"><i></i><i></i></div>';
+    attachDividerDrag(d, i);
+    dividersEl.appendChild(d);
+  }
+}
+
+function renderVTicks() {
+  vticks.innerHTML = '';
+  for (let i = 0; i < state.steps.length; i++) {
+    const t = document.createElement('div');
+    t.className = 'vtick';
+    vticks.appendChild(t);
+  }
+}
+
+function makeInsert(index) {
+  const btn = document.createElement('button');
+  btn.className = 'insert';
+  btn.setAttribute('aria-label', t('step.aria.insert'));
+  btn.dataset.index = index;
+  btn.innerHTML = '<span class="glyph">+</span>';
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (state.steps.length >= MAX_STEPS) return;
+    // Splitting boundary i: stage at slot `index` shares its space with the new neighbor.
+    // If inserting at index 0, we split the FIRST interval.
+    // If inserting at the end, we split the LAST interval.
+    // Otherwise, split interval [index-1, index].
+    let splitIdx;
+    if (index === 0) splitIdx = 0;
+    else if (index >= state.steps.length) splitIdx = state.steps.length - 1;
+    else splitIdx = index - 1;
+    const a = state.boundaries[splitIdx];
+    const b = state.boundaries[splitIdx + 1];
+    const mid = (a + b) / 2;
+    state.steps.splice(index, 0, { id: newId(), title: '', feeling: '', creativity: null, notes: '' });
+    state.boundaries.splice(splitIdx + 1, 0, mid);
+    save();
+    renderTrack();
+  });
+  return btn;
+}
+
+function makeStep(step, i) {
+  const el = document.createElement('div');
+  el.className = 'step' + (stepHasContent(step) ? ' has-content' : '');
+  el.dataset.id = step.id;
+  el.setAttribute('role', 'listitem');
+  el.tabIndex = 0;
+
+  const isFirst = (i === 0);
+  const isLast  = (i === state.steps.length - 1);
+  const role = isFirst ? t('step.role.spark') : (isLast ? t('step.role.today') : '');
+  const placeholder = isFirst ? t('step.ph.spark') : (isLast ? t('step.ph.today') : t('step.ph.default'));
+
+  el.innerHTML = `
+    <div class="num"><span class="n">${pad2(i + 1)}</span><span class="role">${role}</span></div>
+    <button class="remove" aria-label="${t('step.aria.remove')}" title="Remove">×</button>
+    <input class="title-input" type="text" placeholder="${placeholder}" value="${escapeHtml(step.title)}" />
+    <div class="actions">
+      <span class="has-desc" aria-hidden="true"></span>
+      <button class="more" type="button">${t('step.details')}</button>
+    </div>
+  `;
+
+  const titleInput = el.querySelector('.title-input');
+  titleInput.addEventListener('input', () => {
+    step.title = titleInput.value;
+    el.classList.toggle('has-content', stepHasContent(step));
+    save();
+    // Keep anchor select labels live
+    renderAnchorSelects();
+  });
+
+  el.querySelector('.remove').addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (state.steps.length <= MIN_STEPS) { flashMin(); return; }
+    const idx = state.steps.findIndex(s => s.id === step.id);
+    if (idx < 0) return;
+    // Merge: collapse the boundary on the side of the shorter neighbor interval
+    // i.e. drop boundary[idx] if left neighbor is shorter, else boundary[idx+1].
+    const leftWidth  = idx > 0 ? state.boundaries[idx] - state.boundaries[idx - 1] : Infinity;
+    const rightWidth = idx < state.steps.length - 1 ? state.boundaries[idx + 2] - state.boundaries[idx + 1] : Infinity;
+    const dropIdx = (leftWidth <= rightWidth) ? idx : idx + 1;
+    state.steps.splice(idx, 1);
+    state.boundaries.splice(dropIdx, 1);
+    // Force endpoints in case we accidentally dropped one
+    state.boundaries[0] = 0;
+    state.boundaries[state.boundaries.length - 1] = 1;
+    if (state.anchorA === step.id) state.anchorA = '';
+    if (state.anchorB === step.id) state.anchorB = '';
+    save();
+    renderTrack();
+  });
+
+  el.querySelector('.more').addEventListener('click', (e) => {
+    e.stopPropagation();
+    openDrawer(step.id);
+  });
+
+  el.addEventListener('click', (e) => {
+    if (e.target.closest('.title-input, .remove, .more, .actions')) return;
+    openDrawer(step.id);
+  });
+
+  return el;
+}
+
+function updateAddVisibility() {
+  const disable = state.steps.length >= MAX_STEPS;
+  track.querySelectorAll('.insert').forEach(b => {
+    b.disabled = disable;
+    b.style.opacity = disable ? 0.25 : '';
+    b.style.cursor = disable ? 'not-allowed' : '';
+  });
+}
+
+function flashMin() {
+  const h = document.getElementById('hint');
+  h.textContent = t('hint.min', { n: MIN_STEPS });
+  h.style.borderColor = 'var(--warn)';
+  h.style.color = 'var(--warn)';
+  setTimeout(() => {
+    h.textContent = t('hint.default');
+    h.style.borderColor = '';
+    h.style.color = '';
+  }, 1400);
+}
+
+/* ============================================================
+   Divider drag (clamped between neighbors, no crossing)
+   ============================================================ */
+function attachDividerDrag(el, boundaryIndex) {
+  let dragging = false;
+
+  el.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragging = true;
+    el.setPointerCapture(e.pointerId);
+    el.classList.add('dragging');
+  });
+
+  el.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    const rect = dividersEl.getBoundingClientRect();
+    let x = (e.clientX - rect.left) / rect.width;
+    x = Math.max(0, Math.min(1, x));
+    const left  = state.boundaries[boundaryIndex - 1] + MIN_INTERVAL;
+    const right = state.boundaries[boundaryIndex + 1] - MIN_INTERVAL;
+    x = Math.max(left, Math.min(right, x));
+    state.boundaries[boundaryIndex] = x;
+    el.style.left = (x * 100) + '%';
+    // Live-update the two adjacent bands without a full re-render
+    const bandEls = bandsEl.querySelectorAll('.band');
+    const lblEls  = bandsEl.querySelectorAll('.band-label');
+    const leftIdx = boundaryIndex - 1, rightIdx = boundaryIndex;
+    if (bandEls[leftIdx]) {
+      const a = state.boundaries[leftIdx], b = state.boundaries[leftIdx + 1];
+      bandEls[leftIdx].style.left  = (a * 100) + '%';
+      bandEls[leftIdx].style.width = ((b - a) * 100) + '%';
+      lblEls[leftIdx].style.left   = (((a + b) / 2) * 100) + '%';
+    }
+    if (bandEls[rightIdx]) {
+      const a = state.boundaries[rightIdx], b = state.boundaries[rightIdx + 1];
+      bandEls[rightIdx].style.left  = (a * 100) + '%';
+      bandEls[rightIdx].style.width = ((b - a) * 100) + '%';
+      lblEls[rightIdx].style.left   = (((a + b) / 2) * 100) + '%';
+    }
+  });
+
+  const end = () => {
+    if (!dragging) return;
+    dragging = false;
+    el.classList.remove('dragging');
+    save();
+  };
+  el.addEventListener('pointerup', end);
+  el.addEventListener('pointercancel', end);
+}
+
+/* ============================================================
+   Anchor selects
+   ============================================================ */
+function truncate(s, n) { return s.length > n ? s.slice(0, n - 1) + '…' : s; }
+function renderAnchorSelects() {
+  [anchorASel, anchorBSel, anchorCSel].forEach(sel => {
+    const dataKey = sel.dataset.key;
+    sel.innerHTML = '';
+    sel.appendChild(new Option(t('anchor.default'), ''));
+    state.steps.forEach((s, i) => {
+      const label = `${pad2(i+1)}${s.title ? ' · ' + truncate(s.title, 28) : ''}`;
+      sel.appendChild(new Option(label, s.id));
+    });
+    const desired = state[dataKey];
+    if (desired && state.steps.some(s => s.id === desired)) {
+      sel.value = desired;
+    } else {
+      sel.value = '';
+      state[dataKey] = '';
+    }
+  });
+}
+anchorASel.addEventListener('change', () => { state.anchorA = anchorASel.value; save(); });
+anchorBSel.addEventListener('change', () => { state.anchorB = anchorBSel.value; save(); });
+anchorCSel.addEventListener('change', () => { state.aiHelpStageId = anchorCSel.value; save(); });
+
+/* ============================================================
+   Drawer
+   ============================================================ */
+const drawer = document.getElementById('drawer');
+const backdrop = document.getElementById('backdrop');
+const drawerTitle = document.getElementById('drawer-title');
+const drawerFeeling = document.getElementById('drawer-feeling');
+const drawerCreativity = document.getElementById('drawer-creativity');
+const drawerCreativityValue = document.getElementById('drawer-creativity-value');
+const drawerNotes = document.getElementById('drawer-notes');
+const drawerCounter = document.getElementById('drawer-counter');
+const drawerPrev = document.getElementById('drawer-prev');
+const drawerNext = document.getElementById('drawer-next');
+let drawerStepId = null;
+
+function findStep(id) { return state.steps.find(s => s.id === id); }
+function findStepIndex(id) { return state.steps.findIndex(s => s.id === id); }
+
+function openDrawer(stepId) {
+  drawerStepId = stepId;
+  syncDrawer();
+  drawer.classList.add('open');
+  backdrop.classList.add('open');
+  drawer.setAttribute('aria-hidden', 'false');
+  setTimeout(() => drawerFeeling.focus(), 240);
+}
+function closeDrawer() {
+  drawer.classList.remove('open');
+  backdrop.classList.remove('open');
+  drawer.setAttribute('aria-hidden', 'true');
+  drawerStepId = null;
+}
+function syncDrawer() {
+  if (drawerStepId == null) return;
+  const step = findStep(drawerStepId);
+  if (!step) return closeDrawer();
+  const i = findStepIndex(drawerStepId);
+  const isFirst = (i === 0);
+  const isLast  = (i === state.steps.length - 1);
+  const role = isFirst ? t('drawer.role.spark') : (isLast ? t('drawer.role.today') : '');
+  const stageLabel = t('drawer.stage.prefix') + ' ' + pad2(i+1) + t('drawer.stage.suffix');
+  drawer.querySelector('.kicker .num').textContent = stageLabel;
+  drawer.querySelector('.kicker .role').textContent = role ? ` · ${role}` : '';
+  drawerTitle.value = step.title || '';
+  drawerFeeling.value = step.feeling || '';
+  drawerNotes.value = step.notes || '';
+  if (step.creativity != null) {
+    drawerCreativity.value = String(step.creativity);
+    drawerCreativity.classList.remove('unset');
+    drawerCreativityValue.textContent = String(step.creativity);
+    drawerCreativityValue.classList.remove('unset');
+  } else {
+    drawerCreativity.value = '5';
+    drawerCreativity.classList.add('unset');
+    drawerCreativityValue.textContent = '—';
+    drawerCreativityValue.classList.add('unset');
+  }
+  drawerCounter.textContent = t('drawer.counter', { n: i+1, total: state.steps.length });
+  drawerPrev.disabled = isFirst;
+  drawerNext.disabled = isLast;
+}
+
+drawerTitle.addEventListener('input', () => {
+  const step = findStep(drawerStepId); if (!step) return;
+  step.title = drawerTitle.value;
+  save();
+  refreshCard(step.id);
+  renderAnchorSelects();
+});
+drawerFeeling.addEventListener('input', () => {
+  const step = findStep(drawerStepId); if (!step) return;
+  step.feeling = drawerFeeling.value;
+  save(); refreshCard(step.id);
+});
+drawerNotes.addEventListener('input', () => {
+  const step = findStep(drawerStepId); if (!step) return;
+  step.notes = drawerNotes.value;
+  save(); refreshCard(step.id);
+});
+drawerCreativity.addEventListener('input', () => {
+  const step = findStep(drawerStepId); if (!step) return;
+  const v = parseInt(drawerCreativity.value, 10);
+  step.creativity = v;
+  drawerCreativity.classList.remove('unset');
+  drawerCreativityValue.textContent = String(v);
+  drawerCreativityValue.classList.remove('unset');
+  save(); refreshCard(step.id);
+});
+
+function refreshCard(id) {
+  const step = findStep(id); if (!step) return;
+  const card = track.querySelector(`.step[data-id="${id}"]`);
+  if (!card) return;
+  card.classList.toggle('has-content', stepHasContent(step));
+  const ti = card.querySelector('.title-input');
+  if (ti && document.activeElement !== ti) ti.value = step.title || '';
+}
+
+drawerPrev.addEventListener('click', () => {
+  const i = findStepIndex(drawerStepId);
+  if (i > 0) { drawerStepId = state.steps[i - 1].id; syncDrawer(); }
+});
+drawerNext.addEventListener('click', () => {
+  const i = findStepIndex(drawerStepId);
+  if (i >= 0 && i < state.steps.length - 1) { drawerStepId = state.steps[i + 1].id; syncDrawer(); }
+});
+document.getElementById('drawer-close').addEventListener('click', closeDrawer);
+backdrop.addEventListener('click', closeDrawer);
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && drawer.classList.contains('open')) closeDrawer();
+});
+
+/* ============================================================
+   Header meta + moment textareas
+   ============================================================ */
+document.getElementById('pid').addEventListener('input', e => { state.pid = e.target.value; save(); });
+document.getElementById('dte').addEventListener('input', e => { state.dte = e.target.value; save(); });
+document.querySelectorAll('.moment .text').forEach(t => {
+  t.addEventListener('input', () => { state[t.dataset.key] = t.value; save(); });
+});
+
+/* ============================================================
+   Curve drawing
+   ============================================================ */
+(function () {
+  let drawing = false;
+  function rect() { return curveSvg.getBoundingClientRect(); }
+  function toNorm(e) {
+    const r = rect();
+    const x = (e.clientX - r.left) / r.width;
+    const y = (e.clientY - r.top)  / r.height;
+    return [Math.max(0, Math.min(1, x)), Math.max(0, Math.min(1, y))];
+  }
+  curveSvg.addEventListener('pointerdown', (e) => {
+    if (e.target.closest('.marker')) return;
+    e.preventDefault();
+    drawing = true;
+    curveSvg.setPointerCapture(e.pointerId);
+    state.curve = [toNorm(e)];
+    renderCurve();
+  });
+  curveSvg.addEventListener('pointermove', (e) => {
+    if (!drawing) return;
+    const [x, y] = toNorm(e);
+    const last = state.curve[state.curve.length - 1];
+    if (Math.hypot(x - last[0], y - last[1]) < 0.004) return;
+    state.curve.push([x, y]);
+    renderCurve();
+  });
+  function endDraw() {
+    if (!drawing) return;
+    drawing = false;
+    save();
+  }
+  curveSvg.addEventListener('pointerup',     endDraw);
+  curveSvg.addEventListener('pointercancel', endDraw);
+  window.addEventListener('resize', () => requestAnimationFrame(() => {
+    renderCurve();
+  }));
+})();
+
+/* ============================================================
+   Print — build stage detail pages
+   ============================================================ */
+function buildPrintStagePages() {
+  const container = document.getElementById('print-stages');
+  container.innerHTML = '';
+  state.steps.forEach((step, i) => {
+    const isFirst = i === 0;
+    const isLast  = i === state.steps.length - 1;
+    const role = isFirst ? t('drawer.role.spark') : (isLast ? t('drawer.role.today') : '');
+    const a = state.boundaries[i];
+    const b = state.boundaries[i + 1];
+    const hasCreativity = typeof step.creativity === 'number';
+    const isAiStage = step.id === state.aiHelpStageId;
+    const pct = n => Math.round(n * 100);
+    const metaParts = [state.pid, state.dte].filter(Boolean);
+    const stageNum = t('psp.stage.prefix') + ' ' + pad2(i + 1) + t('psp.stage.suffix');
+
+    const page = document.createElement('div');
+    page.className = 'print-stage-page';
+    page.innerHTML = `
+      <div class="psp-head">
+        <div class="psp-num">${stageNum}${role ? ' · ' + role : ''}</div>
+        <div class="psp-meta">${metaParts.map(escapeHtml).join(' · ')}</div>
+      </div>
+      <h2 class="psp-title">${escapeHtml(step.title || t('psp.untitled'))}</h2>
+      <div class="psp-interval">${t('psp.interval', { a: pct(a), b: pct(b) })}</div>
+      <div class="psp-section">
+        <div class="psp-label">${t('psp.felt')}</div>
+        <div class="psp-body${step.feeling ? '' : ' empty'}">${escapeHtml(step.feeling || t('psp.empty'))}</div>
+      </div>
+      <div class="psp-section">
+        <div class="psp-label">${t('psp.creativity')}</div>
+        <div class="psp-creativity-row">
+          <div class="psp-bar-wrap">
+            <div class="psp-bar-track">
+              <div class="psp-bar-fill" style="width:${hasCreativity ? step.creativity * 10 : 0}%"></div>
+            </div>
+            <div class="psp-bar-labels"><span>${t('psp.creativity.blocked')}</span><span>${t('psp.creativity.flow')}</span></div>
+          </div>
+          <div class="psp-creativity-val${hasCreativity ? '' : ' unset'}">
+            ${hasCreativity
+              ? `${step.creativity}<span class="psp-creativity-denom">/10</span>`
+              : '—'}
+          </div>
+        </div>
+      </div>
+      <div class="psp-section">
+        <div class="psp-label">${t('psp.notes')}</div>
+        <div class="psp-body${step.notes ? '' : ' empty'}">${escapeHtml(step.notes || t('psp.empty'))}</div>
+      </div>
+      <div class="psp-section">
+        <div class="psp-label">${t('psp.ai')}</div>
+        <div class="psp-body${isAiStage ? '' : ' empty'}">
+          ${isAiStage
+            ? (escapeHtml(state.aiHelpText) || t('psp.ai.selected'))
+            : t('psp.ai.not')}
+        </div>
+      </div>
+    `;
+    container.appendChild(page);
+  });
+}
+
+/* ============================================================
+   Toolbar
+   ============================================================ */
+document.getElementById('btn-lang').addEventListener('click', toggleLang);
+
+document.getElementById('btn-reset').addEventListener('click', () => {
+  if (!confirm(t('confirm.reset'))) return;
+  const prevLang = state.lang;
+  const steps = defaultSteps();
+  state = {
+    pid: '', dte: todayString(), lang: prevLang, curve: [],
+    steps,
+    boundaries: evenBoundaries(steps.length),
+    anchorA: '', anchorB: '',
+    peakText: '', valleyText: '',
+    aiHelpStageId: '', aiHelpText: '',
+  };
+  try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+  save();
+  hydrateInputs();
+  applyLang();
+  renderCurve();
+});
+
+document.getElementById('btn-export').addEventListener('click', () => {
+  const peakStep    = findStep(state.anchorA);
+  const valleyStep  = findStep(state.anchorB);
+  const aiHelpStep  = findStep(state.aiHelpStageId);
+  const payload = {
+    schema: 'worldbuilding-journey-map/v4',
+    capturedAt: new Date().toISOString(),
+    participant: state.pid || null,
+    date: state.dte || null,
+    emotionCurve: state.curve,
+    stages: state.steps.map((s, i) => {
+      const a = state.boundaries[i];
+      const b = state.boundaries[i + 1];
+      return {
+        index: i + 1,
+        title: s.title || null,
+        interval: { start: a, end: b, width: b - a },
+        curveSummary: curveSummaryOver(a, b),
+        feeling: s.feeling || null,
+        creativityLevel: (typeof s.creativity === 'number') ? s.creativity : null,
+        creativityScale: '1=blocked, 10=in flow',
+        notes: s.notes || null,
+      };
+    }),
+    peak: {
+      anchorStageIndex: peakStep ? state.steps.indexOf(peakStep) + 1 : null,
+      anchorStageTitle: peakStep ? (peakStep.title || null) : null,
+      text: state.peakText || null,
+    },
+    valley: {
+      anchorStageIndex: valleyStep ? state.steps.indexOf(valleyStep) + 1 : null,
+      anchorStageTitle: valleyStep ? (valleyStep.title || null) : null,
+      text: state.valleyText || null,
+    },
+    aiHelpRequest: {
+      anchorStageIndex: aiHelpStep ? state.steps.indexOf(aiHelpStep) + 1 : null,
+      anchorStageTitle: aiHelpStep ? (aiHelpStep.title || null) : null,
+      text: state.aiHelpText || null,
+    },
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const safePid = (state.pid || 'participant').replace(/[^a-z0-9_-]+/gi, '_');
+  a.href = url;
+  a.download = `journey-map_${safePid}_${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 500);
+});
+
+document.getElementById('btn-print').addEventListener('click', () => {
+  buildPrintStagePages();
+  window.print();
+});
+/* Also rebuild pages when user prints via browser Ctrl+P */
+window.addEventListener('beforeprint', () => buildPrintStagePages());
+
+/* ============================================================
+   Submit to server
+   ============================================================ */
+document.getElementById('btn-submit').addEventListener('click', async () => {
+  if (!confirm(t('confirm.submit'))) return;
+  const btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+  btn.textContent = t('btn.submit.ing');
+  btn.classList.remove('done', 'error');
+  try {
+    const payload = Object.assign({}, state, { capturedAt: new Date().toISOString() });
+    const res = await fetch('/api/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error(`Server responded ${res.status}`);
+    const result = await res.json();
+    if (!result.ok) throw new Error(result.error || 'Submission failed');
+    btn.textContent = t('btn.submit.done');
+    btn.classList.add('done');
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = t('btn.submit');
+    btn.classList.add('error');
+    setTimeout(() => btn.classList.remove('error'), 2500);
+    alert(t('alert.submit.fail', { err: err.message }));
+  }
+});
+
+/* ============================================================
+   Hydration
+   ============================================================ */
+function hydrateInputs() {
+  document.getElementById('pid').value = state.pid || '';
+  document.getElementById('dte').value = state.dte || '';
+  document.querySelector('.moment [data-key="peakText"]').value    = state.peakText || '';
+  document.querySelector('.moment [data-key="valleyText"]').value  = state.valleyText || '';
+  document.querySelector('.moment [data-key="aiHelpText"]').value  = state.aiHelpText || '';
+}
+
+function todayString() {
+  // Friendly readable date, e.g. "May 25, 2026"
+  try {
+    return new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+  } catch (e) {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+}
+
+/* ============================================================
+   Init
+   ============================================================ */
+/* Sample N points across the curve within [a,b] for a stage summary */
+function curveSummaryOver(a, b) {
+  if (!state.curve || state.curve.length < 2) return null;
+  const N = 24;
+  const ys = [];
+  for (let k = 0; k <= N; k++) {
+    const x = a + (b - a) * (k / N);
+    ys.push(curveYAt(x));
+  }
+  // y=0 at top of plot, y=1 at bottom — emotion is inverted (low y = excited)
+  const min = Math.min(...ys), max = Math.max(...ys);
+  const avg = ys.reduce((s, v) => s + v, 0) / ys.length;
+  return {
+    note: 'y is normalized [0,1] from top of plot; lower y = more excited',
+    avgY: avg,
+    minY: min,
+    maxY: max,
+    emotionAvg: 1 - avg, // 0..1 from stuck to excited
+  };
+}
+
+load();
+if (!state.dte) {
+  state.dte = todayString();
+  save();
+}
+hydrateInputs();
+applyLang();
+requestAnimationFrame(() => {
+  renderCurve();
+});
+</script>
+</body>
+</html>
